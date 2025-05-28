@@ -1,0 +1,86 @@
+<?php
+include 'db.php';
+
+$name = $email = $phone = "";
+$nameErr = $emailErr = $phoneErr = "";
+$successMsg = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $valid = true;
+
+    // Validate name
+    if (empty($_POST["name"])) {
+        $nameErr = "Name is required";
+        $valid = false;
+    } else {
+        $name = trim($_POST["name"]);
+    }
+
+    // Validate email
+    if (empty($_POST["email"])) {
+        $emailErr = "Email is required";
+        $valid = false;
+    } elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+        $emailErr = "Invalid email format";
+        $valid = false;
+    } else {
+        $email = trim($_POST["email"]);
+    }
+
+    // Validate phone
+    if (empty($_POST["phone"])) {
+        $phoneErr = "Phone is required";
+        $valid = false;
+    } else {
+        $phone = trim($_POST["phone"]);
+    }
+
+    // If valid, insert into database
+    if ($valid) {
+        $stmt = $conn->prepare("INSERT INTO contacts (name, email, phone) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $name, $email, $phone);
+
+        if ($stmt->execute()) {
+            $successMsg = "Contact added successfully!";
+            // Clear form fields
+            $name = $email = $phone = "";
+        } else {
+            echo "Error: " . $stmt->error;
+        }
+
+        $stmt->close();
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Contact</title>
+</head>
+<body>
+    <h1>Add New Contact</h1>
+    <a href="index.php">Back to Contact List</a><br><br>
+
+    <?php if ($successMsg) echo "<p style='color:green;'>$successMsg</p>"; ?>
+
+    <form method="post" action="">
+        Name: <br>
+        <input type="text" name="name" value="<?php echo htmlspecialchars($name); ?>">
+        <span style="color:red;"><?php echo $nameErr; ?></span>
+        <br><br>
+
+        Email: <br>
+        <input type="text" name="email" value="<?php echo htmlspecialchars($email); ?>">
+        <span style="color:red;"><?php echo $emailErr; ?></span>
+        <br><br>
+
+        Phone: <br>
+        <input type="text" name="phone" value="<?php echo htmlspecialchars($phone); ?>">
+        <span style="color:red;"><?php echo $phoneErr; ?></span>
+        <br><br>
+
+        <input type="submit" value="Add Contact">
+    </form>
+</body>
+</html>
