@@ -11,7 +11,6 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-// Fetch existing contact data
 $stmt = $conn->prepare("SELECT name, email, phone FROM contacts WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
@@ -20,12 +19,10 @@ if (!$stmt->fetch()) {
     die("Contact not found");
 }
 $stmt->close();
-
-// Handle form submission
+    
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $valid = true;
 
-    // Validate name
     if (empty($_POST["name"])) {
         $nameErr = "Name is required";
         $valid = false;
@@ -33,7 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $name = trim($_POST["name"]);
     }
 
-    // Validate email
     if (empty($_POST["email"])) {
         $emailErr = "Email is required";
         $valid = false;
@@ -44,7 +40,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = trim($_POST["email"]);
     }
 
-    // Validate phone
     if (empty($_POST["phone"])) {
         $phoneErr = "Phone is required";
         $valid = false;
