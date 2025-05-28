@@ -1,7 +1,6 @@
 <?php
 include 'db.php';
 
-// Fetch all contacts
 $sql = "SELECT * FROM contacts";
 $result = $conn->query($sql);
 ?>
@@ -27,7 +26,6 @@ $result = $conn->query($sql);
 
         <?php
         if ($result->num_rows > 0) {
-            // output data of each row
             while($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td>" . $row["id"] . "</td>";
