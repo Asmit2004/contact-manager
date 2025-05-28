@@ -8,7 +8,6 @@ $successMsg = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $valid = true;
 
-    // Validate name
     if (empty($_POST["name"])) {
         $nameErr = "Name is required";
         $valid = false;
@@ -16,7 +15,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $name = trim($_POST["name"]);
     }
 
-    // Validate email
     if (empty($_POST["email"])) {
         $emailErr = "Email is required";
         $valid = false;
@@ -27,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = trim($_POST["email"]);
     }
 
-    // Validate phone
     if (empty($_POST["phone"])) {
         $phoneErr = "Phone is required";
         $valid = false;
@@ -35,14 +32,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $phone = trim($_POST["phone"]);
     }
 
-    // If valid, insert into database
     if ($valid) {
         $stmt = $conn->prepare("INSERT INTO contacts (name, email, phone) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $name, $email, $phone);
 
         if ($stmt->execute()) {
             $successMsg = "Contact added successfully!";
-            // Clear form fields
+            
             $name = $email = $phone = "";
         } else {
             echo "Error: " . $stmt->error;
